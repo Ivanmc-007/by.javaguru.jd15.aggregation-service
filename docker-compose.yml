@@ -1,0 +1,41 @@
+name: jd15-aggregation
+
+services:
+  app:
+    build: .
+    container_name: jd15-aggregation
+    environment:
+      DATABASE_URL: jdbc:mysql://db:3306/profiler-aggregation
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: 1234
+      KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092,host.docker.internal:9094,host.docker.internal:9096
+      EUREKA_SERVER_URL: http://host.docker.internal:8761/eureka/
+    ports:
+      - "56004:56004"
+    depends_on:
+      - db
+    networks:
+      - aggregation-net
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: profiler-aggregation
+      MYSQL_ROOT_PASSWORD: 1234
+    networks:
+      - aggregation-net
+    ports:
+      - "53304:3306"
+    expose:
+      - "3306"
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+volumes:
+  mysql-db:
+
+networks:
+  aggregation-net:
+    name: aggregation-net
+    driver: bridge
