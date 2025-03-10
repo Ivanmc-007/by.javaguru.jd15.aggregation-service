@@ -1,0 +1,1 @@
+# by.javaguru.jd15.aggregation-service
